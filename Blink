@@ -1,29 +1,27 @@
-//Этот код является точной копией кода из свободно распространаяемых пример скетчей среды Arduino IDE. 
-//Мы разместили его здесь только для того, чтобы держать все примеры на одном ресурсе.
+//Этот код является точной копией кода из свободно распространаяемых скетчей среды Arduino IDE. 
+//Мы разместили его здесь для того, чтобы держать все примеры на одном ресурсе.
 
 /*
   Blink
-  Turns on an LED on for one second, then off for one second, repeatedly.
- 
-  This example code is in the public domain.
+  Включаем встроенный светодиод, присоединенный к 13 пину в течении одной секунды, затем выключаем на секунду.
+  Повторяем. 
  */
  
-// Pin 13 has an LED connected on most Arduino boards.
-// give it a name:
+// Зададим номер вывода, которому присоединен светодиод:
 int led = 13;
 
-// the setup routine runs once when you press reset:
+// Настройка начальных параметров
 void setup()
 {                
-  // initialize the digital pin as an output.
+  // Настроим пин с номером led как выход.
   pinMode(led, OUTPUT);     
 }
 
-// the loop routine runs over and over again forever:
+// Все, что написано в функции loop() будет повторяться до бесконечности:
 void loop() 
 {
-  digitalWrite(led, HIGH);   // turn the LED on (HIGH is the voltage level)
-  delay(1000);               // wait for a second
-  digitalWrite(led, LOW);    // turn the LED off by making the voltage LOW
-  delay(1000);               // wait for a second
+  digitalWrite(led, HIGH);   // включить светодиод (HIGH - это высокий уровень напряжения на пине, обозначенном как led)
+  delay(1000);               // ждем секунду
+  digitalWrite(led, LOW);    // выключаем светодиод, подавая на соответствующий пин низкий уровень напряжения - LOW
+  delay(1000);               // ждем еще секунду
 }
