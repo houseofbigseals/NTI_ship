@@ -1,0 +1,23 @@
+#define ULTRASONIC_PIN 16
+void setup()
+{
+  Serial.begin(9600); 
+}
+
+void loop()
+{
+  Serial.println(readUltrasonic(ULTRASONIC_PIN));
+  delay(10);
+}
+
+int readUltrasonic(int pin)
+{
+  //Returns distance in mm
+  pinMode(pin, OUTPUT);
+  digitalWrite(pin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(pin, LOW);
+ 
+  pinMode(pin, INPUT);
+  return pulseIn(pin, HIGH, (unsigned long)60000) * 10 / 29 / 2;
+}
