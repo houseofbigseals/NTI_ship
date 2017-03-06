@@ -3,6 +3,10 @@
  Demonstrates analog input by reading an analog sensor on analog pin 0 and
  turning on a light emitting diode(LED)  connected to digital pin 13 
  if there is low voltage on battery. 
+ 5v - 1024
+ 0v - 0
+ 3.7v - 756
+ 3v - 615
  */
 
 int sensorPin = A0;    // select the input pin for the potentiometer
@@ -19,7 +23,7 @@ void loop()
 {
   // read the value from the sensor:
   sensorValue = analogRead(sensorPin);
-  if(sensorValue < 740)
+  if(sensorValue < 615)
   {
     // turn the ledPin on
     digitalWrite(ledPin, HIGH);  
