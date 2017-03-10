@@ -3,9 +3,6 @@
 Servo servoLeft, servoRight;
 
 /*порты для оборудования*/
-//передний дальнометр
-const int Ftrig = 0;
-
 //передний правый дальномер
 const int FtrigR = 2;
 
