@@ -1,0 +1,41 @@
+#include <Servo.h>
+
+Servo servoLeft, servoRight;
+
+void Init()
+{
+//привязываем приводы к пинам
+  servoLeft.attach(11);
+  servoRight.attach(10);
+}
+  
+void main()
+{
+
+//  делаем правый поворот
+    servoLeft.write(0);
+    servoRight.write(0);
+    delay(1000);
+    servoLeft.write(95);
+    servoRight.write(85);
+    delay(200);
+    
+//  и останавливаемся
+    servoLeft.write(90);
+    servoRight.write(90);
+    delay(1500);
+
+
+//  делаем левый поворот
+    servoLeft.write(180);
+    servoRight.write(180);
+    delay(1000);
+    servoLeft.write(85);
+    servoRight.write(95);
+    delay(200);
+    
+//  и останавливаемся
+    servoLeft.write(90);
+    servoRight.write(90);
+    delay(1500);
+ }
