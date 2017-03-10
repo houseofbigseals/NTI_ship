@@ -1,0 +1,105 @@
+#include <Servo.h>
+
+Servo servoLeft, servoRight;
+
+/*порты для оборудования*/
+//передний дальнометр
+const int Ftrig = 0;
+
+//передний правый дальномер
+const int FtrigR = 2;
+
+float distFR;
+float vLeft;
+float vRight;
+
+const int v = 10; //минимальная скорость
+int dmax = 100; // максимальное расстояние от берега в mm 
+int dmin = 30; // минимальное расстояние от берега в mm 
+
+int command = 1; // в этой переменной будем хранить режим работы корабля
+int L = 2; // надо поварачивать налево
+int R = 3; // надо поворачивать направо
+int N = 1; // продолжаем движение вперед
+
+float turnSpeed = 90;
+
+void setup()
+{
+  //сервопривод
+  servoLeft.attach(11);
+  servoRight.attach(10);
+
+  /*инициализация пинов*/
+  pinMode(FtrigR, OUTPUT);
+
+  servoLeft.write(90);
+  servoRight.write(90);
+}
+
+void loop()
+{
+  distFR  = readUltrasonic(FtrigR);
+
+  vLeft = v;
+  vRight = v;
+
+  if(distFR < dmax && distFR > dmin)
+  {
+  // все отлично, продолжаем движение
+  command = N;
+  }
+  if(distFR > dmax)
+  { 
+  // мы отдалились от берега, увеличиваем ненадолго скорость левого мотора
+  command = L;
+  }
+  if(distFR < dmin)
+  { 
+  // мы слишком приблизились к берегу, увеличиваем ненадолго скорость правого мотора
+  command = R;
+  }
+  
+  switch(command)
+  {
+  case N:
+  vRight = v;
+  vLeft = v;
+  break;
+  case R:
+  vRight = 1.2*v;
+  vLeft = v;
+  break;
+  case L:
+  vLeft = 1.2*v;
+  vRight = v;
+  default:
+  break;
+  }
+    
+  setServo(vLeft,vRight);
+  delay (200);
+}
+
+float setServo(float vLeft, float vRight)
+{
+  // задает сервомоторам нужную скорость
+  if (vLeft > 90)  { vLeft = 90; }
+  if (vRight > 90) { vRight = 90;}
+  servoLeft.write(90 - vLeft);
+  servoRight.write(90 + vRight);
+}
+
+int readUltrasonic(int pin)
+{
+  //Возвращает расстояние в мм
+  pinMode(pin, OUTPUT);
+  digitalWrite(pin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(pin, LOW);
+ 
+  pinMode(pin, INPUT);
+  return pulseIn(pin, HIGH, (unsigned long)60000) * 10 / 29 / 2;
+}
+
+
