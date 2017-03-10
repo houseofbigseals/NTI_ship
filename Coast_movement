@@ -63,13 +63,17 @@ void loop()
   vRight = v;
   vLeft = v;
   break;
+  
   case R:
   vRight = 1.2*v;
   vLeft = v;
   break;
+  
   case L:
   vLeft = 1.2*v;
   vRight = v;
+  break;
+  
   default:
   break;
   }
