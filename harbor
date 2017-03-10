@@ -1,0 +1,36 @@
+#define FORWARD_SONAR 10
+#define FORWARD_LEFT_SONAR 11
+#define FORWARD_RIGHT_SONAR 12
+
+void setup()
+{
+  float distF;
+  float distFL;
+  float distFR;
+  Serial.begin(9600); 
+}
+
+void loop()
+{
+  distF = readUltrasonic(FORWARD_SONAR);
+  distFL = readUltrasonic(FORWARD_LEFT_SONAR);
+  distFR = readUltrasonic(FORWARD_RIGHT_SONAR);
+  
+  if(distF < 200 && distFL < 100 && distFR < 100)
+  {
+    Serial.println("We are in the harbor!");
+  }
+      delay(1000);
+}
+
+int readUltrasonic(int pin)
+{
+  //Returns distance in mm
+  pinMode(pin, OUTPUT);
+  digitalWrite(pin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(pin, LOW);
+ 
+  pinMode(pin, INPUT);
+  return pulseIn(pin, HIGH, (unsigned long)60000) * 10 / 29 / 2;
+}
