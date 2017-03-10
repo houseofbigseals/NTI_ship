@@ -1,0 +1,157 @@
+#include <Servo.h>
+
+Servo servoLeft, servoRight;
+
+/*порты для оборудования*/
+//передний дальномер
+const int Ftrig = 0;
+
+//передний правый и задний правый дальномеры
+const int FtrigR = 2;
+const int BtrigR = 4;
+
+//передний левый и задний левый дальномеры
+const int FtrigL = 5;
+const int BtrigL = 6;
+
+float dist;
+float distFL;
+float distFR;
+float distBL;
+float distBR;
+
+float vLeft;
+float vRight;
+
+const int v = 10; //минимальная скорость
+int dmax = 200; // расстояние реакции на поворот в mm 
+int dmin = 30; // минимальное расстояние от берега в mm 
+
+int command = 1; // в этой переменной будем хранить режим работы корабля
+int L = 2; // надо поворачивать налево
+int R = 3; // надо поворачивать направо
+int N = 1; // продолжаем движение вперед
+
+float turnSpeed = 90;
+
+void setup()
+{
+  //сервопривод
+  servoLeft.attach(11);
+  servoRight.attach(10);
+
+  /*инициализация пинов*/
+  pinMode(FtrigR, OUTPUT);
+  pinMode(FtrigL, OUTPUT);
+  pinMode(Ftrig, OUTPUT);
+  pinMode(BtrigR, OUTPUT);
+  pinMode(BtrigL, OUTPUT);
+
+  servoLeft.write(90);
+  servoRight.write(90);
+}
+
+void loop()
+{
+  distFR  = readUltrasonic(FtrigR);
+  distFL  = readUltrasonic(FtrigL);
+  distBR  = readUltrasonic(BtrigR);
+  distBL  = readUltrasonic(BtrigL);
+  dist  = readUltrasonic(Ftrig);
+
+  vLeft = v;
+  vRight = v;
+
+  if(dist > dmin)
+  {
+  // все отлично, продолжаем движение
+  command = N;
+  }
+  if(dist < dmin)
+  {
+    if(distFR > dmax && distBR > dmax && distFL < dmax)
+    { 
+    //поворот справа
+      command = R;
+    }
+    if(distFL > dmax && distBL > dmax && distFR < dmax)
+    { 
+    //поворот слева
+      command = L;
+    }
+  
+  switch(command)
+  {
+  case N:
+  // надо удерживаться на небольшом расстоянии от стен
+  if(distBL < dmin) 
+  { 
+    vLeft = 1.2 * v; 
+    vRight = v;
+  }
+  if(distBR < dmin) 
+  { 
+    vLeft = v; 
+    vRight = 1.2*v;
+  }
+  if(distBL>dmin && distBR> dmin)
+  {
+    vLeft = v; 
+    vRight = v;
+  }
+  break;
+  
+  case R:
+  // надо повернуть направо и немного проплыть вперед
+  servoLeft.write(0);
+  servoRight.write(0);
+  delay(1000);
+  servoLeft.write(95);
+  servoRight.write(85);
+  delay(200);
+  setServo(vLeft*10, vRight*10); 
+  delay(1500);
+  k = N;
+  break;
+  
+  case L:
+  // надо повернуть налево и немного проплыть вперед
+  servoLeft.write(180);
+  servoRight.write(180);
+  delay(1000);
+  servoLeft.write(85);
+  servoRight.write(95);
+  delay(200);
+  setServo(vLeft*10, vRight*10); 
+  delay(1500);
+  k = N;
+  break;
+  
+  default:
+  break;
+  }
+
+  setServo(vLeft,vRight);
+  delay (200);
+}
+
+float setServo(float vLeft, float vRight)
+{
+  // задает сервомоторам нужную скорость
+  if (vLeft > 90)  { vLeft = 90; }
+  if (vRight > 90) { vRight = 90;}
+  servoLeft.write(90 - vLeft);
+  servoRight.write(90 + vRight);
+}
+
+int readUltrasonic(int pin)
+{
+  //Возвращает расстояние в мм
+  pinMode(pin, OUTPUT);
+  digitalWrite(pin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(pin, LOW);
+ 
+  pinMode(pin, INPUT);
+  return pulseIn(pin, HIGH, (unsigned long)60000) * 10 / 29 / 2;
+}
