@@ -4,7 +4,6 @@ int RECV_PIN = 11;
 void setup ()
 {
   Serial.begin(9600);
-  //irrecv.enableIRIn(); 
   pinMode(RECV_PIN, INPUT); 
   // Start the receiver
 }
@@ -14,18 +13,10 @@ int recState;
 void loop() 
 {
   recState = digitalRead(RECV_PIN);
-
-  // check if the pushbutton is pressed.
-  // if it is, the buttonState is HIGH:
+  
   if (recState == LOW) 
   {     
     Serial.println("Yes");
     delay(50);
   } 
-  else 
-  {
-    //Serial.println("NO"); 
-  }
-  //delay(200);
-
 }
